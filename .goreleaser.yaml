@@ -38,8 +38,8 @@ checksum:
 
 release:
   github:
-    owner: julian
-    name: macos-login-items-cli
+    owner: j4n-e4t
+    name: mlogin
   draft: false
   prerelease: auto
 
@@ -49,7 +49,7 @@ brews:
       owner: '{{ .Env.HOMEBREW_TAP_OWNER }}'
       name: '{{ .Env.HOMEBREW_TAP_REPO }}'
       token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
-    homepage: https://github.com/julian/macos-login-items-cli
+    homepage: https://github.com/j4n-e4t/mlogin
     description: CLI for managing macOS login/background items and system extensions
     directory: Formula
     install: |

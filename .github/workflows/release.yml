@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   goreleaser:
-    if: endsWith(github.repository, '/macos-login-items-cli')
+    if: github.repository == 'j4n-e4t/mlogin'
     runs-on: macos-latest
 
     steps:

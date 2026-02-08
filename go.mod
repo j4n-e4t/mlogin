@@ -1,4 +1,4 @@
-module github.com/julian/macos-login-items-cli
+module github.com/j4n-e4t/mlogin
 
 go 1.25.2
 
