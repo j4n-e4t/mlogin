@@ -18,15 +18,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Locate Go module
+        id: locate
+        run: |
+          set -euo pipefail
+          gomod=$(find . -name go.mod -not -path './.git/*' | head -n1)
+          if [ -z "$gomod" ]; then
+            echo "go.mod not found"
+            exit 1
+          fi
+          dir=$(dirname "$gomod")
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+          echo "Using module dir: $dir"
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: ${{ steps.locate.outputs.dir }}/go.mod
           cache: true
 
       - name: Verify formatting
+        working-directory: ${{ steps.locate.outputs.dir }}
         run: |
-          files=$(gofmt -l ./cmd)
+          files=$(gofmt -l .)
           if [ -n "$files" ]; then
             echo "The following files are not gofmt-formatted:"
             echo "$files"
@@ -34,7 +48,9 @@ jobs:
           fi
 
       - name: Run tests
+        working-directory: ${{ steps.locate.outputs.dir }}
         run: go test ./...
 
       - name: Build
-        run: go build -v ./cmd/mlogin
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: go build -v ./...

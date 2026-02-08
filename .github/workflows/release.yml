@@ -19,16 +19,31 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Locate Go module
+        id: locate
+        run: |
+          set -euo pipefail
+          gomod=$(find . -name go.mod -not -path './.git/*' | head -n1)
+          if [ -z "$gomod" ]; then
+            echo "go.mod not found"
+            exit 1
+          fi
+          dir=$(dirname "$gomod")
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+          echo "Using module dir: $dir"
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: ${{ steps.locate.outputs.dir }}/go.mod
           cache: true
 
       - name: Run tests
+        working-directory: ${{ steps.locate.outputs.dir }}
         run: go test ./...
 
       - name: Run GoReleaser
+        working-directory: ${{ steps.locate.outputs.dir }}
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
