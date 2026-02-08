@@ -1,0 +1,58 @@
+version: 2
+
+project_name: mlogin
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: mlogin
+    main: ./cmd/mlogin
+    binary: mlogin
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - >-
+        -s -w
+        -X main.version={{ .Version }}
+        -X main.commit={{ .Commit }}
+        -X main.date={{ .Date }}
+
+archives:
+  - id: mlogin
+    ids:
+      - mlogin
+    formats:
+      - tar.gz
+    files:
+      - README*
+
+checksum:
+  name_template: checksums.txt
+
+release:
+  github:
+    owner: julian
+    name: macos-login-items-cli
+  draft: false
+  prerelease: auto
+
+brews:
+  - name: mlogin
+    repository:
+      owner: '{{ .Env.HOMEBREW_TAP_OWNER }}'
+      name: '{{ .Env.HOMEBREW_TAP_REPO }}'
+      token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
+    homepage: https://github.com/julian/macos-login-items-cli
+    description: CLI for managing macOS login/background items and system extensions
+    directory: Formula
+    install: |
+      bin.install "mlogin"
+    test: |
+      system "#{bin}/mlogin", "version"
