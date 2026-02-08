@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   test-and-build:
+    if: endsWith(github.repository, '/macos-login-items-cli')
     runs-on: macos-latest
 
     steps:
