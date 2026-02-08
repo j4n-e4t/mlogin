@@ -43,12 +43,12 @@ jobs:
         run: go test ./...
 
       - name: Run GoReleaser
-        working-directory: ${{ steps.locate.outputs.dir }}
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: '~> v2'
           args: release --clean
+          workdir: ${{ steps.locate.outputs.dir }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_OWNER: j4n-e4t
